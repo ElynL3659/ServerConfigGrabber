@@ -1,2 +1,0 @@
-variable = %time%
-echo variable
