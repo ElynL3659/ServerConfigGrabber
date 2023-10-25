@@ -17,6 +17,14 @@ function HyperVConfigExport
     Import-Module Hyper-V
     Get-VM >$HVExportPath\VirtualMachines.txt
     Get-VM | Select-Object * >$HVExportPath\VirtualMachines-Detailed.txt
+    Write-Host "VM Details Exported" -ForegroundColor Green
+    Write-Host "Generating Cluster Config Export - Please wait (This could take a while)" -ForegroundColor Cyan
+    Get-VMHostCluster >$HVExportPath\HostCluster-Detailed.txt
+    Get-Cluster | Format-List -Property * >$HVExportPath\Cluster-Detailed.txt
+    Get-ClusterGroup | Format-List -Property * >$HVExportPath\ClusterGroup-Detailed.txt
+    Get-ClusterDiagnosticInfo -WriteToPath $HVExportPath\ClusterDiagnosticInfo.txt
+    Get-ClusterNode >$HVExportPath\ClusterNodes.txt
+    Write-Host "Cluster Details Exported" -ForegroundColor Green
 }
 
 # CHECK IF ADMIN #
@@ -121,3 +129,6 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
         Write-Host "Hyper-V is disabled" -ForegroundColor Red
         New-Item -ItemType File -Path $workDir -Name "#HyperV-DISABLED" | Out-Null
     }
+
+    Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta
+    Write-Host "Your exported files are located here: " $workDir -ForegroundColor Magenta
