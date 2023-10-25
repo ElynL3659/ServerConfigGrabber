@@ -27,7 +27,7 @@ function HyperVConfigExport
     Write-Host "Cluster Details Exported" -ForegroundColor Green
 }
 
-# CHECK IF ADMIN #
+<# CHECK IF ADMIN #
 $isAdmin = [System.Security.Principal.WindowsPrincipal]::new(
     [System.Security.Principal.WindowsIdentity]::GetCurrent()).
         IsInRole('Administrators')
@@ -47,7 +47,7 @@ if(-not $isAdmin) {
     return
 }
 "Now running in Elevated Powershell"
-
+#>
 
 #START#
 Write-Host $sys -ForegroundColor Red

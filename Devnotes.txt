@@ -30,5 +30,5 @@
 \ Check Hyper-V Enabled
 \ Get VM Information
 \ Get VM Information - Detailed
-Get Cluster Information
-Get Cluster Node Info
+\Get Cluster Information
+\Get Cluster Node Info
