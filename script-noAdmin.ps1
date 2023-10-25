@@ -16,13 +16,12 @@ function HyperVConfigExport
     Write-Host "Hyper-V Configs are being prepared and exported - Please do not disturb this operation" -ForegroundColor Red
     Import-Module Hyper-V
     Get-VM >$HVExportPath\VirtualMachines.txt
+    Write-Host "Generating Detailed Virtual Machine Config - Please wait (This could take a while)"
     Get-VM | Select-Object * >$HVExportPath\VirtualMachines-Detailed.txt
     Write-Host "VM Details Exported" -ForegroundColor Green
     Write-Host "Generating Cluster Config Export - Please wait (This could take a while)" -ForegroundColor Cyan
-    Get-VMHostCluster >$HVExportPath\HostCluster-Detailed.txt
     Get-Cluster | Format-List -Property * >$HVExportPath\Cluster-Detailed.txt
     Get-ClusterGroup | Format-List -Property * >$HVExportPath\ClusterGroup-Detailed.txt
-    Get-ClusterDiagnosticInfo -WriteToPath $HVExportPath\ClusterDiagnosticInfo.txt
     Get-ClusterNode >$HVExportPath\ClusterNodes.txt
     Write-Host "Cluster Details Exported" -ForegroundColor Green
 }
@@ -107,17 +106,18 @@ Get-ChildItem >$workDir\ProgData-Export.txt
 Write-Host "PROGRAM FILE DIRECTORIES EXPORTED" -ForegroundColor Green
 
 ## Software, Services & Roles ##
-Write-Host "Running Software List Export - Please Wait" -ForegroundColor Cyan
+Write-Host "Running Software List Export - Please Wait, this step can take a while" -ForegroundColor Cyan
 Get-WMIObject -Class Win32_Product >$workDir\InstalledSoftware.txt
 Write-Host "SOFTWARE LIST EXPORTED" -ForegroundColor Green
 
 Write-Host "Running Roles & Features Export - Please Wait" -ForegroundColor Cyan
 Get-WindowsFeature >$workdir\Roles.txt | Out-Null
 Get-WindowsOptionalFeature -Online >$workDir\Features.txt
+Write-Host "ROLES & FEATURES LIST EXPORTED" -ForegroundColor Green
 
 ## Hyper V ##
 Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
-    $hypervstatus = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
+    $hypervstatus = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V -Online
     # Check if Hyper-V is enabled
     if($hypervstatus.State -eq "Enabled") {
         Write-Host "Hyper-V is enabled." -ForegroundColor Green
