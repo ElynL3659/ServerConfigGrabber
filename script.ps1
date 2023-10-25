@@ -1,4 +1,4 @@
-$ver = "v0.9"
+$ver = "v1.1"
 $updated = "25/10/2023"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
 $computer = $env:computername
@@ -16,7 +16,7 @@ function HyperVConfigExport
     Write-Host "Hyper-V Configs are being prepared and exported - Please do not disturb this operation" -ForegroundColor Red
     Import-Module Hyper-V
     Get-VM >$HVExportPath\VirtualMachines.txt
-    Write-Host "Generating Detailed Virtual Machine Config - Please wait (This could take a while)"
+    Write-Host "Generating Detailed Virtual Machine Config - Please wait (This could take a while)" -ForegroundColor Cyan
     Get-VM | Select-Object * >$HVExportPath\VirtualMachines-Detailed.txt
     Write-Host "VM Details Exported" -ForegroundColor Green
     Write-Host "Generating Cluster Config Export - Please wait (This could take a while)" -ForegroundColor Cyan
@@ -78,8 +78,7 @@ if (-not (test-path "C:\SCG\$computer" )) {
 }
 Write-Host "Folders Present - Starting Information Export" -ForegroundColor Green
 
-"#######################################################################################################################"
-
+"##################################################################################################"
 ###################################################### RUN SCRIPT ######################################################
 
 ## Network Configuration ##
@@ -106,7 +105,7 @@ Get-ChildItem >$workDir\ProgData-Export.txt
 Write-Host "PROGRAM FILE DIRECTORIES EXPORTED" -ForegroundColor Green
 
 ## Software, Services & Roles ##
-Write-Host "Running Software List Export - Please Wait, this step can take a while" -ForegroundColor Cyan
+Write-Host "Running Software List Export - Please wait (This could take a while)" -ForegroundColor Cyan
 Get-WMIObject -Class Win32_Product >$workDir\InstalledSoftware.txt
 Write-Host "SOFTWARE LIST EXPORTED" -ForegroundColor Green
 
@@ -129,6 +128,7 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
         Write-Host "Hyper-V is disabled" -ForegroundColor Red
         New-Item -ItemType File -Path $workDir -Name "#HyperV-DISABLED" | Out-Null
     }
-
-    Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta
-    Write-Host "Your exported files are located here: " $workDir -ForegroundColor Magenta
+    Write-Host " " -BackgroundColor White
+    Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta -BackgroundColor White
+    Write-Host "Your exported files are located here: " $workDir -ForegroundColor Magenta -BackgroundColor White
+    Write-Host " " -BackgroundColor White
