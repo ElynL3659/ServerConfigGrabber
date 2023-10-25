@@ -3,9 +3,21 @@ $updated = "25/10/2023"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
-$timeValue = Get-Date -format "HH-mm"
 $logName = "C:\SCG\" + $computer + "\SCG-Log-" + $dateValue + ".log"
 $workDir = "C:\SCG\" + $computer + "\"
+$module
+
+function HyperVConfigExport
+{  
+    param(
+        [string]$HVExportPath
+    )
+    "########################## HYPER V IS INSTALLED - RUNNING CONFIG EXPORT ##########################"
+    Write-Host "Hyper-V Configs are being prepared and exported - Please do not disturb this operation" -ForegroundColor Red
+    Import-Module Hyper-V
+    Get-VM >$HVExportPath\VirtualMachines.txt
+    Get-VM | Select-Object * >$HVExportPath\VirtualMachines-Detailed.txt
+}
 
 # CHECK IF ADMIN #
 $isAdmin = [System.Security.Principal.WindowsPrincipal]::new(
@@ -49,9 +61,13 @@ if (-not (test-path "C:\SCG\$computer" )) {
     New-Item -ItemType Directory -Path "C:\SCG" -name $computer | Out-Null
     Write-Host "Folder Created!" -ForegroundColor Cyan
 } else {
-    Write-Host "Device folder already exists - Creating Folder Appended by 'Time'" -ForegroundColor Cyan
-    New-Item -ItemType Directory -Path "C:\SCG" -name $computer-$timeValue -ErrorAction Inquire | Out-Null
-    Write-Host "Folder Created - C:\SCG\"$computer-$timeValue -ForegroundColor Cyan
+    Write-Host "Device folder already exists - Files within will be overwritten'" -ForegroundColor Cyan
+    Write-Host "Files within C:\SCG\ on this computer will be permanently lost. Would you like to proceed?"
+    $folderProceed = Read-Host -Prompt "Continue? Y/N"
+    if ( $folderProceed -eq 'y' ){
+        Remove-Item C:\SCG\$computer\* -Recurse
+    }
+
 }
 Write-Host "Folders Present - Starting Information Export" -ForegroundColor Green
 
@@ -87,15 +103,19 @@ Write-Host "Running Software List Export - Please Wait" -ForegroundColor Cyan
 Get-WMIObject -Class Win32_Product >$workDir\InstalledSoftware.txt
 Write-Host "SOFTWARE LIST EXPORTED" -ForegroundColor Green
 
+Write-Host "Running Roles & Features Export - Please Wait" -ForegroundColor Cyan
+Get-WindowsFeature >$workdir\Roles.txt | Out-Null
+Get-WindowsOptionalFeature -Online >$workDir\Features.txt
 
 ## Hyper V ##
 Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
-    $hyperv = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
+    $hypervstatus = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
     # Check if Hyper-V is enabled
-    if($hyperv.State -eq "Enabled") {
+    if($hypervstatus.State -eq "Enabled") {
         Write-Host "Hyper-V is enabled." -ForegroundColor Green
         New-Item -ItemType File -Path $workDir -Name "#HyperV-ENABLED" | Out-Null
-        New-Item -ItemType Diretory -Path $workDir -Name "Hyper-V Config" | Out-Null
+        New-Item -ItemType Directory -Path $workDir -Name "HyperVConfig" | Out-Null
+        HyperVConfigExport -HVExportPath C:\SCG\$computer\HyperVConfig
     }
     else {
         Write-Host "Hyper-V is disabled" -ForegroundColor Red
