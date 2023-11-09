@@ -84,6 +84,7 @@ Write-Host "Folders Present - Starting Information Export" -ForegroundColor Gree
 ## Network Configuration ##
 Write-Host "Running Network Configuration Export - Please Wait" -ForegroundColor Cyan
 ipconfig /all >$workDir\ipconfig.txt
+getmac /v >$workDir\GetMac.txt
 Write-Host "IP CONFIG EXPORTED" -ForegroundColor Green
 
 ## System Configuration ##
