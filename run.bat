@@ -1,1 +1,1 @@
-Powershell.exe -executionpolicy remotesigned -File  script.ps1
+Powershell.exe -executionpolicy remotesigned -File  script-noAdmin.ps1

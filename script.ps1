@@ -1,11 +1,16 @@
-$ver = "v1.1"
-$updated = "25/10/2023"
+$ver = "v1.4"
+$updated = "01/12/2023"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
 $logName = "C:\SCG\" + $computer + "\SCG-Log-" + $dateValue + ".log"
 $workDir = "C:\SCG\" + $computer + "\"
 $module
+$NetworkStore = $null
+$locations = "\\10.201.7.31\d$\Scripts\SCG\Storage",
+             "\\10.201.7.32\d$\Scripts\SCG\Storage",
+             "\\10.201.7.33\d$\Scripts\SCG\Storage",
+             "\\10.201.7.34\d$\Scripts\SCG\Storage"
 
 function HyperVConfigExport
 {  
@@ -26,7 +31,7 @@ function HyperVConfigExport
     Write-Host "Cluster Details Exported" -ForegroundColor Green
 }
 
-# CHECK IF ADMIN #
+<# CHECK IF ADMIN #
 $isAdmin = [System.Security.Principal.WindowsPrincipal]::new(
     [System.Security.Principal.WindowsIdentity]::GetCurrent()).
         IsInRole('Administrators')
@@ -46,14 +51,33 @@ if(-not $isAdmin) {
     return
 }
 "Now running in Elevated Powershell"
-
+#>
 
 #START#
 Write-Host $sys -ForegroundColor Red
 Write-Host "The script is running - Log available at "$logName -ForegroundColor Cyan
 "#### ~~~~ #### ~~~~ ####"
 
-# Create script folder #
+# Identifying Network Store Location#
+Write-Host "Locating suitable network store for results - Please Wait" -ForegroundColor Cyan
+foreach ($location in $locations) {
+    try {
+        if (Test-Path -Path $location -ErrorAction Stop) {
+            $NetworkStore = $location+"\"+$computer+"\"
+            break
+        }
+    } catch {
+        Write-Host "Error accessing the network store locations, please manually check access to the management cluster" -ForegroundColor Red
+    }
+}
+
+if ($null -ne $NetworkStore) {
+    Write-Host "Accessible network location found: $NetworkStore" -ForegroundColor Green
+} else {
+    Write-Host "No accessible network location found. The script will be unable to export results beyond this device" -ForegroundColor Red
+}
+
+# Create script folders #
 Write-Host "Starting Folder Creation for exporting files - Please Wait"  -ForegroundColor Cyan
 if (-not (test-path "C:\SCG")) {
     Write-Host "SCG folder doesnt exist - Creating Folder..." -ForegroundColor DarkBlue
@@ -129,7 +153,15 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
         Write-Host "Hyper-V is disabled" -ForegroundColor Red
         New-Item -ItemType File -Path $workDir -Name "#HyperV-DISABLED" | Out-Null
     }
-    Write-Host " " -BackgroundColor White
-    Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta -BackgroundColor White
-    Write-Host "Your exported files are located here: " $workDir -ForegroundColor Magenta -BackgroundColor White
-    Write-Host " " -BackgroundColor White
+
+    Write-Host "Copying results directory to network store - Please Wait" -ForegroundColor Cyan
+    Robocopy $workDir $NetworkStore | Out-Null
+    Write-Host "SCG RESULTS DIRECTORY EXPORTED" -ForegroundColor Green 
+    
+    Write-Host " "
+    Write-Host "--- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** " -ForegroundColor Red 
+    Write-Host " "
+
+    Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta
+    Write-Host "Your results files are located here: " $workDir -ForegroundColor Magenta
+    Write-Host "Your results have also been exported to " $NetworkStore -ForegroundColor Magenta
