@@ -1,0 +1,5 @@
+robocopy \\10.201.7.31\d$\Scripts\SCG\SCG\ C:\SCG /e
+
+CD C:\SCG
+
+.\script.ps1
