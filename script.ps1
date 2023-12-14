@@ -26,7 +26,7 @@ function HyperVConfigExport
     Write-Host "VM Details Exported" -ForegroundColor Green
     Write-Host "Generating Cluster Config Export - Please wait (This could take a while)" -ForegroundColor Cyan
     Get-Cluster | Format-List -Property * >$HVExportPath\Cluster-Detailed.txt
-    Get-ClusterGroup | Format-List -Property * >$HVExportPath\ClusterGroup-Detailed.txt
+    Get-ClusterGroup | Format-Table -AutoSize -Property Cluster,GroupType,OwnerNode,Name,State,Id >$HVExportPath\ClusterGroup-Detailed.txt
     Get-ClusterNode >$HVExportPath\ClusterNodes.txt
     Write-Host "Cluster Details Exported" -ForegroundColor Green
 }
@@ -155,7 +155,7 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
     }
 
     Write-Host "Copying results directory to network store - Please Wait" -ForegroundColor Cyan
-    Robocopy $workDir $NetworkStore | Out-Null
+    Robocopy $workDir $NetworkStore /E | Out-Null
     Write-Host "SCG RESULTS DIRECTORY EXPORTED" -ForegroundColor Green 
     
     Write-Host " "
