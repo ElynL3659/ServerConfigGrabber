@@ -1,5 +1,5 @@
-$ver = "v1.4"
-$updated = "01/12/2023"
+$ver = "v1.6.2"
+$updated = "20/12/2023"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
@@ -20,14 +20,14 @@ function HyperVConfigExport
     "########################## HYPER V IS INSTALLED - RUNNING CONFIG EXPORT ##########################"
     Write-Host "Hyper-V Configs are being prepared and exported - Please do not disturb this operation" -ForegroundColor Red
     Import-Module Hyper-V
-    Get-VM >$HVExportPath\VirtualMachines.txt
+    Get-VM >$HVExportPath\$computer-VirtualMachines.txt
     Write-Host "Generating Detailed Virtual Machine Config - Please wait (This could take a while)" -ForegroundColor Cyan
-    Get-VM | Select-Object * >$HVExportPath\VirtualMachines-Detailed.txt
+    Get-VM | Select-Object * >$HVExportPath\$computer-VirtualMachines-Detailed.txt
     Write-Host "VM Details Exported" -ForegroundColor Green
     Write-Host "Generating Cluster Config Export - Please wait (This could take a while)" -ForegroundColor Cyan
-    Get-Cluster | Format-List -Property * >$HVExportPath\Cluster-Detailed.txt
-    Get-ClusterGroup | Format-Table -AutoSize -Property Cluster,GroupType,OwnerNode,Name,State,Id >$HVExportPath\ClusterGroup-Detailed.txt
-    Get-ClusterNode >$HVExportPath\ClusterNodes.txt
+    Get-Cluster | Format-List -Property * >$HVExportPath\$computer-Cluster-Detailed.txt
+    Get-ClusterGroup | Format-Table -AutoSize -Property Cluster,GroupType,OwnerNode,Name,State,Id >$HVExportPath\$computer-ClusterGroup-Detailed.txt
+    Get-ClusterNode >$HVExportPath\$computer-ClusterNodes.txt
     Write-Host "Cluster Details Exported" -ForegroundColor Green
 }
 
@@ -80,7 +80,7 @@ if ($null -ne $NetworkStore) {
 # Create script folders #
 Write-Host "Starting Folder Creation for exporting files - Please Wait"  -ForegroundColor Cyan
 if (-not (test-path "C:\SCG")) {
-    Write-Host "SCG folder doesnt exist - Creating Folder..." -ForegroundColor DarkBlue
+    Write-Host "SCG folder doesnt exist - Creating Folder..." -ForegroundColor Blue
     New-Item -ItemType Directory -Path "C:\" -name "SCG" | Out-Null
     Write-Host "Folder Created!" -ForegroundColor Cyan
 } else {
@@ -88,7 +88,7 @@ if (-not (test-path "C:\SCG")) {
 }
 
 if (-not (test-path "C:\SCG\$computer" )) {
-    Write-Host "Device folder doesn't exist - Creating Folder..." -ForegroundColor DarkBlue
+    Write-Host "Device folder doesn't exist - Creating Folder..." -ForegroundColor Blue
     New-Item -ItemType Directory -Path "C:\SCG" -name $computer | Out-Null
     Write-Host "Folder Created!" -ForegroundColor Cyan
 } else {
@@ -107,36 +107,36 @@ Write-Host "Folders Present - Starting Information Export" -ForegroundColor Gree
 
 ## Network Configuration ##
 Write-Host "Running Network Configuration Export - Please Wait" -ForegroundColor Cyan
-ipconfig /all >$workDir\ipconfig.txt
-getmac /v >$workDir\GetMac.txt
+ipconfig /all >$workDir\$computer-ipconfig.txt
+getmac /v >$workDir\$computer-GetMac.txt
 Write-Host "IP CONFIG EXPORTED" -ForegroundColor Green
 
 ## System Configuration ##
 Write-Host "Running System Information & Configuration Export - Please Wait" -ForegroundColor Cyan
-systeminfo >$workDir\SysInfo.txt
+systeminfo >$workDir\$computer-SysInfo.txt
 Write-Host "SYSTEM INFORMATION EXPORTED" -ForegroundColor Green
 
 ## Prog Files - Structure ###
 Write-Host "Running Program File Directory Export - Please Wait" -ForegroundColor Cyan
 Set-Location "C:\Program Files\"
-Get-ChildItem >$workDir\ProgFiles-Export.txt
+Get-ChildItem >$workDir\$computer-ProgFiles-Export.txt
 
 Set-Location "C:\Program Files (x86)\"
-Get-ChildItem >$workDir\ProgFilesx86-Export.txt
+Get-ChildItem >$workDir\$computer-ProgFilesx86-Export.txt
 
 Set-Location "C:\ProgramData\"
-Get-ChildItem >$workDir\ProgData-Export.txt
+Get-ChildItem >$workDir\$computer-ProgData-Export.txt
 
 Write-Host "PROGRAM FILE DIRECTORIES EXPORTED" -ForegroundColor Green
 
 ## Software, Services & Roles ##
 Write-Host "Running Software List Export - Please wait (This could take a while)" -ForegroundColor Cyan
-Get-WMIObject -Class Win32_Product >$workDir\InstalledSoftware.txt
+Get-WMIObject -Class Win32_Product >$workDir\$computer-InstalledSoftware.txt
 Write-Host "SOFTWARE LIST EXPORTED" -ForegroundColor Green
 
 Write-Host "Running Roles & Features Export - Please Wait" -ForegroundColor Cyan
 Get-WindowsFeature >$workdir\Roles.txt | Out-Null
-Get-WindowsOptionalFeature -Online >$workDir\Features.txt
+Get-WindowsOptionalFeature -Online >$workDir\$computer-Features.txt
 Write-Host "ROLES & FEATURES LIST EXPORTED" -ForegroundColor Green
 
 ## Hyper V ##
@@ -147,7 +147,7 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
         Write-Host "Hyper-V is enabled." -ForegroundColor Green
         New-Item -ItemType File -Path $workDir -Name "#HyperV-ENABLED" | Out-Null
         New-Item -ItemType Directory -Path $workDir -Name "HyperVConfig" | Out-Null
-        HyperVConfigExport -HVExportPath C:\SCG\$computer\HyperVConfig
+        HyperVConfigExport -HVExportPath C:\SCG\$computer\$computer-HyperVConfig
     }
     else {
         Write-Host "Hyper-V is disabled" -ForegroundColor Red
