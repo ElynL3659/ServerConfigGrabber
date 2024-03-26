@@ -1,5 +1,5 @@
-$ver = "v1.6.2"
-$updated = "20/12/2023"
+$ver = "v1.6.4"
+$updated = "26/03/2024"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
@@ -90,6 +90,7 @@ if (-not (test-path "C:\SCG")) {
 if (-not (test-path "C:\SCG\$computer" )) {
     Write-Host "Device folder doesn't exist - Creating Folder..." -ForegroundColor Blue
     New-Item -ItemType Directory -Path "C:\SCG" -name $computer | Out-Null
+    New-Item -ItemType Directory -Path "C:\SCG\$computer" -name $computer-HyperVConfig | Out-Null
     Write-Host "Folder Created!" -ForegroundColor Cyan
 } else {
     Write-Host "Device folder already exists - Files within will be overwritten'" -ForegroundColor Cyan
@@ -154,14 +155,14 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
         New-Item -ItemType File -Path $workDir -Name "#HyperV-DISABLED" | Out-Null
     }
 
-    Write-Host "Copying results directory to network store - Please Wait" -ForegroundColor Cyan
-    Robocopy $workDir $NetworkStore /E | Out-Null
-    Write-Host "SCG RESULTS DIRECTORY EXPORTED" -ForegroundColor Green 
+Write-Host "Copying results directory to network store - Please Wait" -ForegroundColor Cyan
+Robocopy $workDir $NetworkStore /E | Out-Null
+Write-Host "SCG RESULTS DIRECTORY EXPORTED" -ForegroundColor Green 
     
-    Write-Host " "
-    Write-Host "--- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** " -ForegroundColor Red 
-    Write-Host " "
+Write-Host " "
+Write-Host "--- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** --- **** " -ForegroundColor Red 
+Write-Host " "
 
-    Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta
-    Write-Host "Your results files are located here: " $workDir -ForegroundColor Magenta
-    Write-Host "Your results have also been exported to " $NetworkStore -ForegroundColor Magenta
+Write-Host "Server Configuration Grabber (SCG) is now completed - You may close this window" -ForegroundColor Magenta
+Write-Host "Your results files are located here: " $workDir -ForegroundColor Magenta
+Write-Host "Your results have also been exported to " $NetworkStore -ForegroundColor Magenta
