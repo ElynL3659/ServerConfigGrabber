@@ -10,7 +10,9 @@ $NetworkStore = $null
 $locations = "\\10.201.7.31\d$\Scripts\SCG\Storage",
              "\\10.201.7.32\d$\Scripts\SCG\Storage",
              "\\10.201.7.33\d$\Scripts\SCG\Storage",
-             "\\10.201.7.34\d$\Scripts\SCG\Storage"
+             "\\10.201.7.34\d$\Scripts\SCG\Storage",
+             "\\10.201.7.35\d$\Scripts\SCG\Storage",
+             "\\10.201.7.36\d$\Scripts\SCG\Storage"
 
 function HyperVConfigExport
 {  
@@ -147,7 +149,6 @@ Write-Host "Checking Hyper-V Configuration - Please Wait" -ForegroundColor Cyan
     if($hypervstatus.State -eq "Enabled") {
         Write-Host "Hyper-V is enabled." -ForegroundColor Green
         New-Item -ItemType File -Path $workDir -Name "#HyperV-ENABLED" | Out-Null
-        New-Item -ItemType Directory -Path $workDir -Name "HyperVConfig" | Out-Null
         HyperVConfigExport -HVExportPath C:\SCG\$computer\$computer-HyperVConfig
     }
     else {
