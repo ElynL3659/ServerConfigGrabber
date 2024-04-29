@@ -1,6 +1,7 @@
 $ver = "v1.6.4"
 $updated = "26/03/2024"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
+
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
 $logName = "C:\SCG\" + $computer + "\SCG-Log-" + $dateValue + ".log"
