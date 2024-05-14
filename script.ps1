@@ -1,19 +1,15 @@
 $ver = "v1.6.4"
 $updated = "26/03/2024"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
-
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
 $logName = "C:\SCG\" + $computer + "\SCG-Log-" + $dateValue + ".log"
 $workDir = "C:\SCG\" + $computer + "\"
 $module
 $NetworkStore = $null
-$locations = "\\10.201.7.31\d$\Scripts\SCG\Storage",
-             "\\10.201.7.32\d$\Scripts\SCG\Storage",
-             "\\10.201.7.33\d$\Scripts\SCG\Storage",
+$locations = "\\10.201.7.33\d$\Scripts\SCG\Storage",
              "\\10.201.7.34\d$\Scripts\SCG\Storage",
-             "\\10.201.7.35\d$\Scripts\SCG\Storage",
-             "\\10.201.7.36\d$\Scripts\SCG\Storage"
+             "\\10.201.7.35\d$\Scripts\SCG\Storage"
 
 function HyperVConfigExport
 {  
