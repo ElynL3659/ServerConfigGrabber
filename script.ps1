@@ -1,5 +1,5 @@
-$ver = "v1.6.4"
-$updated = "26/03/2024"
+$ver = "v1.6.7"
+$updated = "14/05/2024"
 $sys = "#### ~~~~ Server Config Grabber (SCG) Script - Version " + $ver + " - Last updated " + $updated + " - Created by Elyn Leon ~~~~ ####"
 $computer = $env:computername
 $dateValue = Get-Date -format "MM-dd-yy-HH-mm"
@@ -135,7 +135,7 @@ Get-WMIObject -Class Win32_Product >$workDir\$computer-InstalledSoftware.txt
 Write-Host "SOFTWARE LIST EXPORTED" -ForegroundColor Green
 
 Write-Host "Running Roles & Features Export - Please Wait" -ForegroundColor Cyan
-Get-WindowsFeature >$workdir\Roles.txt | Out-Null
+Get-WindowsFeature >$workDir\$computer-Roles.txt | Out-Null
 Get-WindowsOptionalFeature -Online >$workDir\$computer-Features.txt
 Write-Host "ROLES & FEATURES LIST EXPORTED" -ForegroundColor Green
 
