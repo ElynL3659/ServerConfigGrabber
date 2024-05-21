@@ -7,9 +7,9 @@ $logName = "C:\SCG\" + $computer + "\SCG-Log-" + $dateValue + ".log"
 $workDir = "C:\SCG\" + $computer + "\"
 $module
 $NetworkStore = $null
-$locations = "\\10.201.7.33\d$\Scripts\SCG\Storage",
-             "\\10.201.7.34\d$\Scripts\SCG\Storage",
-             "\\10.201.7.35\d$\Scripts\SCG\Storage"
+$locations = "\\10.201.7.31\d$\Scripts\SCG\Storage",
+             "\\10.201.7.32\d$\Scripts\SCG\Storage",
+             "\\10.201.7.33\d$\Scripts\SCG\Storage"
 
 function HyperVConfigExport
 {  
